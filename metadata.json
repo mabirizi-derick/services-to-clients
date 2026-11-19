@@ -1,0 +1,6 @@
+{
+  "name": "GlamTrack Uganda - On-Demand Nail Studios & African Hair Stylists",
+  "description": "Uganda's on-demand booking platform for nail studios, intricate nail paintings, knotless braids, and beauty stylists with real-time GPS tracking across Kampala.",
+  "requestFramePermissions": ["geolocation", "notifications"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
