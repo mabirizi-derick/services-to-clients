@@ -110,3 +110,45 @@ export interface User {
   loyaltyTier: 'Bronze' | 'Silver' | 'Gold' | 'VIP Luxe';
   location?: { lat: number; lng: number; address: string };
 }
+
+export interface TrafficPeriodStat {
+  uniqueVisitors: number;
+  totalVisits: number;
+  mobileCount: number;
+  desktopCount: number;
+}
+
+export interface TrafficBucket extends TrafficPeriodStat {
+  key: string;
+  label: string;
+}
+
+export interface RecentVisitor {
+  visitorId: string;
+  userName: string;
+  userRole: string;
+  deviceType: 'mobile' | 'desktop';
+  tab: string;
+  tabLabel: string;
+  lastSeenAt: string;
+  totalActions: number;
+}
+
+export interface TrafficAnalyticsData {
+  summary: {
+    activeNow: number;
+    currentHour: TrafficPeriodStat;
+    today: TrafficPeriodStat;
+    thisWeek: TrafficPeriodStat;
+    thisMonth: TrafficPeriodStat;
+    allTime: TrafficPeriodStat;
+  };
+  hourly: TrafficBucket[];
+  daily: TrafficBucket[];
+  weekly: TrafficBucket[];
+  monthly: TrafficBucket[];
+  topSections: Array<{ tab: string; label: string; count: number }>;
+  recentVisitors: RecentVisitor[];
+  generatedAt: string;
+}
+

@@ -64,28 +64,29 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-stone-950/85 backdrop-blur-md flex items-center justify-center p-4">
-      <div className="bg-stone-900 text-stone-100 w-full max-w-md rounded-2xl shadow-2xl border border-stone-700/80 overflow-hidden">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-stone-950/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-4">
+      <div className="bg-stone-900 text-stone-100 w-full max-w-md rounded-2xl shadow-2xl border border-stone-700/80 overflow-hidden flex flex-col max-h-[92vh]">
         
         {/* Header */}
-        <div className="px-6 py-4 border-b border-stone-800 flex items-center justify-between bg-stone-950/80">
+        <div className="px-4 sm:px-6 py-3.5 sm:py-4 border-b border-stone-800 flex items-center justify-between bg-stone-950/80 shrink-0">
           <div>
             <div className="text-[11px] uppercase font-mono tracking-wider font-semibold text-amber-400">
               JWT Secure Authentication
             </div>
-            <h3 className="text-xl font-serif font-bold text-white">
+            <h3 className="text-lg sm:text-xl font-serif font-bold text-white">
               {user ? 'Account Profile' : mode === 'login' ? 'Sign In' : 'Create Account'}
             </h3>
           </div>
           <button
             onClick={onClose}
+            aria-label="Close sign in dialog"
             className="p-1.5 rounded-lg text-stone-400 hover:text-white hover:bg-stone-800 cursor-pointer transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        <div className="p-6 space-y-5">
+        <div className="p-4 sm:p-6 space-y-5 overflow-y-auto flex-1">
           {errorMsg && (
             <div className="p-2.5 bg-rose-950/80 border border-rose-500/40 rounded-xl text-rose-200 text-xs flex items-center gap-2">
               <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
@@ -137,11 +138,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 <div className="text-[11px] font-mono font-semibold uppercase tracking-wider text-stone-400">
                   Quick Access Profiles
                 </div>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                   <button
                     type="button"
                     onClick={() => handleDemoLogin('admin')}
-                    className="p-2.5 rounded-xl border border-emerald-500/40 bg-emerald-950/60 hover:bg-emerald-900/70 text-left transition-colors cursor-pointer"
+                    className="p-2.5 rounded-xl border border-emerald-500/40 bg-emerald-950/60 hover:bg-emerald-900/70 text-left transition-colors cursor-pointer flex sm:block items-center justify-between gap-2"
                   >
                     <div className="text-xs font-bold text-white">Mabirizi (Admin)</div>
                     <div className="text-[10px] text-emerald-400 font-medium">Add Salons</div>
@@ -149,7 +150,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   <button
                     type="button"
                     onClick={() => handleDemoLogin('customer')}
-                    className="p-2.5 rounded-xl border border-stone-700 bg-stone-950/80 hover:bg-stone-800 text-left transition-colors cursor-pointer"
+                    className="p-2.5 rounded-xl border border-stone-700 bg-stone-950/80 hover:bg-stone-800 text-left transition-colors cursor-pointer flex sm:block items-center justify-between gap-2"
                   >
                     <div className="text-xs font-bold text-white">Amina (Client)</div>
                     <div className="text-[10px] text-amber-400 font-medium">Gold (1,450 pts)</div>
@@ -157,7 +158,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   <button
                     type="button"
                     onClick={() => handleDemoLogin('provider')}
-                    className="p-2.5 rounded-xl border border-stone-700 bg-stone-950/80 hover:bg-stone-800 text-left transition-colors cursor-pointer"
+                    className="p-2.5 rounded-xl border border-stone-700 bg-stone-950/80 hover:bg-stone-800 text-left transition-colors cursor-pointer flex sm:block items-center justify-between gap-2"
                   >
                     <div className="text-xs font-bold text-white">Camille (Artist)</div>
                     <div className="text-[10px] text-stone-400 font-medium">Kololo Nails</div>
@@ -167,10 +168,18 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
               <div className="relative flex items-center justify-center my-3">
                 <div className="border-t border-stone-800 w-full" />
-                <span className="bg-stone-900 px-3 text-[11px] uppercase tracking-wider text-stone-400 font-medium">
+                <span className="bg-stone-900 px-3 text-[11px] uppercase tracking-wider text-stone-400 font-medium shrink-0">
                   Or use credentials
                 </span>
               </div>
+
+              {mode === 'login' && (
+                <div className="p-2.5 rounded-xl bg-stone-950/70 border border-stone-800 text-[11px] text-stone-400 space-y-0.5">
+                  <div className="text-stone-300 font-semibold">Demo Email Credentials:</div>
+                  <div>Admin: <span className="font-mono text-emerald-400">admin@glamtrack.ug</span> / <span className="font-mono text-stone-200">AdminPass123!</span></div>
+                  <div>Client: <span className="font-mono text-amber-300">claire.valmont@example.com</span> / <span className="font-mono text-stone-200">GlamPass123!</span></div>
+                </div>
+              )}
 
               <form onSubmit={handleSubmit} className="space-y-3">
                 {mode === 'register' && (

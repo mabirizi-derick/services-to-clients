@@ -27,26 +27,27 @@ export const ProviderDetailModal: React.FC<ProviderDetailModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-stone-950/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-4">
-      <div className="bg-stone-900 text-stone-100 w-full max-w-4xl rounded-2xl sm:rounded-3xl shadow-2xl border border-stone-700/80 overflow-hidden my-6 flex flex-col max-h-[90vh]">
+      <div className="bg-stone-900 text-stone-100 w-full max-w-4xl rounded-2xl sm:rounded-3xl shadow-2xl border border-stone-700/80 overflow-hidden my-2 sm:my-6 flex flex-col max-h-[92vh]">
         
         {/* Modal Top Bar */}
-        <div className="px-6 py-4 border-b border-stone-800 flex items-center justify-between bg-stone-950/80 shrink-0">
-          <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-amber-400">
-            <span>Verified Ugandan Salon Profile</span>
-            <span aria-hidden="true" className="text-stone-600">·</span>
-            <span className="text-stone-300">{provider.location.city}</span>
+        <div className="px-4 sm:px-6 py-3.5 sm:py-4 border-b border-stone-800 flex items-center justify-between gap-2 bg-stone-950/80 shrink-0">
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] sm:text-xs font-mono uppercase tracking-wider text-amber-400 min-w-0">
+            <span className="truncate">Verified Ugandan Salon</span>
+            <span aria-hidden="true" className="text-stone-600 hidden sm:inline">·</span>
+            <span className="text-stone-300 truncate">{provider.location.city}</span>
           </div>
 
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-stone-400 hover:text-white hover:bg-stone-800 cursor-pointer"
+            aria-label="Close provider details"
+            className="p-1.5 rounded-lg text-stone-400 hover:text-white hover:bg-stone-800 cursor-pointer shrink-0"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Modal Scrollable Body */}
-        <div className="overflow-y-auto flex-1 p-6 space-y-8">
+        <div className="overflow-y-auto flex-1 p-4 sm:p-6 space-y-6 sm:space-y-8">
           
           {/* Hero Studio Banner */}
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
@@ -125,18 +126,18 @@ export const ProviderDetailModal: React.FC<ProviderDetailModalProps> = ({
               </div>
 
               {/* Gallery Switcher */}
-              <div className="flex items-center gap-1 bg-stone-950 p-1 rounded-xl text-xs border border-stone-800">
+              <div className="grid grid-cols-2 sm:flex items-center gap-1 bg-stone-950 p-1 rounded-xl text-[11px] sm:text-xs border border-stone-800 w-full sm:w-auto">
                 <button
                   onClick={() => setActiveTabType('nails')}
-                  className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+                  className={`px-2.5 sm:px-3 py-2 sm:py-1.5 rounded-lg transition-all cursor-pointer truncate ${
                     activeTabType === 'nails' ? 'bg-amber-400 font-bold text-stone-950 shadow-xs' : 'text-stone-400 hover:text-white'
                   }`}
                 >
-                  Nail Art & Paints ({NAIL_ART_GALLERY.length})
+                  Nail Art ({NAIL_ART_GALLERY.length})
                 </button>
                 <button
                   onClick={() => setActiveTabType('hair')}
-                  className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+                  className={`px-2.5 sm:px-3 py-2 sm:py-1.5 rounded-lg transition-all cursor-pointer truncate ${
                     activeTabType === 'hair' ? 'bg-amber-400 font-bold text-stone-950 shadow-xs' : 'text-stone-400 hover:text-white'
                   }`}
                 >
@@ -147,7 +148,7 @@ export const ProviderDetailModal: React.FC<ProviderDetailModalProps> = ({
 
             {/* Gallery Grid */}
             {activeTabType === 'nails' ? (
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
                 {NAIL_ART_GALLERY.map((item) => (
                   <div
                     key={item.id}
@@ -230,13 +231,13 @@ export const ProviderDetailModal: React.FC<ProviderDetailModalProps> = ({
               </h3>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
               {provider.services.map((srv) => (
                 <div
                   key={srv.id}
-                  className="p-4 rounded-xl border border-stone-800 bg-stone-950/80 hover:border-amber-400/40 transition-all flex items-center justify-between shadow-xs"
+                  className="p-3.5 sm:p-4 rounded-xl border border-stone-800 bg-stone-950/80 hover:border-amber-400/40 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs"
                 >
-                  <div className="space-y-1 pr-3">
+                  <div className="space-y-1 min-w-0">
                     <div className="font-bold text-white text-sm">
                       {srv.name}
                     </div>
@@ -244,18 +245,18 @@ export const ProviderDetailModal: React.FC<ProviderDetailModalProps> = ({
                       {srv.description}
                     </div>
                     <div className="text-[11px] text-stone-400 flex items-center gap-2">
-                      <Clock className="w-3.5 h-3.5 text-amber-400" />
+                      <Clock className="w-3.5 h-3.5 text-amber-400 shrink-0" />
                       <span>{srv.durationMinutes} minutes session</span>
                     </div>
                   </div>
 
-                  <div className="text-right shrink-0 space-y-2">
+                  <div className="flex sm:flex-col items-center sm:items-end justify-between gap-2 pt-2 sm:pt-0 border-t sm:border-t-0 border-stone-800/80 shrink-0">
                     <div className="text-sm font-mono font-bold text-amber-300 tabular-nums">
                       UGX {srv.price.toLocaleString()}
                     </div>
                     <button
                       onClick={() => onBookService(provider, srv)}
-                      className="px-3 py-1.5 text-xs font-bold text-stone-950 bg-amber-400 hover:bg-amber-300 rounded-lg transition-colors cursor-pointer flex items-center gap-1 shadow-md"
+                      className="px-3.5 py-2 sm:py-1.5 text-xs font-bold text-stone-950 bg-amber-400 hover:bg-amber-300 rounded-lg transition-colors cursor-pointer flex items-center gap-1 shadow-md"
                     >
                       <span>Book Now</span>
                       <ChevronRight className="w-3.5 h-3.5" />
@@ -310,18 +311,18 @@ export const ProviderDetailModal: React.FC<ProviderDetailModalProps> = ({
         </div>
 
         {/* Modal Sticky Bottom Action Footer */}
-        <div className="px-6 py-4 border-t border-stone-800 bg-stone-950 flex items-center justify-between shrink-0">
-          <div>
-            <div className="text-xs text-stone-400">Selected Provider:</div>
-            <div className="text-sm font-serif font-bold text-white">{provider.businessName}</div>
+        <div className="px-4 sm:px-6 py-3.5 sm:py-4 border-t border-stone-800 bg-stone-950 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
+          <div className="min-w-0">
+            <div className="text-[11px] sm:text-xs text-stone-400">Selected Provider:</div>
+            <div className="text-sm font-serif font-bold text-white truncate">{provider.businessName}</div>
           </div>
 
           <button
             onClick={() => onBookService(provider)}
-            className="px-6 py-2.5 text-xs font-bold text-stone-950 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 rounded-xl transition-all cursor-pointer shadow-md shadow-amber-500/20 flex items-center gap-2"
+            className="w-full sm:w-auto justify-center px-5 sm:px-6 py-2.5 text-xs font-bold text-stone-950 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 rounded-xl transition-all cursor-pointer shadow-md shadow-amber-500/20 flex items-center gap-2"
           >
             <span>Proceed to On-Demand Booking</span>
-            <ChevronRight className="w-4 h-4" />
+            <ChevronRight className="w-4 h-4 shrink-0" />
           </button>
         </div>
 

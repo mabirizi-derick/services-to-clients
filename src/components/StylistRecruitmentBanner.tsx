@@ -9,20 +9,20 @@ export const StylistRecruitmentBanner: React.FC<StylistRecruitmentBannerProps> =
   onJoinAsProvider,
 }) => {
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="bg-gradient-to-r from-stone-900 via-stone-850 to-stone-900 rounded-3xl p-8 sm:p-12 text-white border border-stone-800 shadow-xl relative overflow-hidden">
+    <section className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <div className="bg-gradient-to-r from-stone-900 via-stone-800 to-stone-900 rounded-2xl sm:rounded-3xl p-5 sm:p-12 text-white border border-stone-800 shadow-xl relative overflow-hidden">
         {/* Decorative ambient elements */}
         <div className="absolute top-0 right-0 -mt-12 -mr-12 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 left-0 -mb-12 -ml-12 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center">
           <div className="lg:col-span-8 space-y-4">
-            <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-amber-400 bg-amber-400/10 border border-amber-400/20 px-3 py-1 rounded-full">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>For Nail Techs, Stylists & Salons in Kampala</span>
+            <div className="inline-flex items-center gap-2 text-[11px] sm:text-xs font-mono uppercase tracking-widest text-amber-400 bg-amber-400/10 border border-amber-400/20 px-3 py-1 rounded-full">
+              <Sparkles className="w-3.5 h-3.5 shrink-0" />
+              <span>For Nail Techs, Stylists &amp; Salons</span>
             </div>
 
-            <h2 className="text-3xl sm:text-4xl font-serif font-bold tracking-tight text-white">
+            <h2 className="text-2xl sm:text-4xl font-serif font-bold tracking-tight text-white">
               Are you a talented nail technician or hair stylist in Uganda?
             </h2>
 

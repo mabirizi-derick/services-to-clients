@@ -1,4 +1,7 @@
 import crypto from 'crypto';
+import fs from 'fs';
+import path from 'path';
+import bcrypt from 'bcryptjs';
 
 export interface BaseDoc {
   _id: string;
@@ -101,11 +104,41 @@ export interface NotificationDoc extends BaseDoc {
   metadata?: any;
 }
 
-// In-Memory MongoDB-compatible Collection Engine with indexing & query support
+export interface VisitDoc extends BaseDoc {
+  visitorId: string;
+  userId?: string;
+  userName?: string;
+  userRole?: string;
+  deviceType: 'mobile' | 'desktop';
+  tab: string;
+  userAgent?: string;
+}
+
+// In-Memory MongoDB-compatible Collection Engine with optional JSON persistence hook
 export class MongoCollection<T extends BaseDoc> {
   private documents: Map<string, T> = new Map();
+  private onChange?: () => void;
 
-  constructor(public name: string) {}
+  constructor(public name: string, onChange?: () => void) {
+    this.onChange = onChange;
+  }
+
+  setChangeListener(fn: () => void) {
+    this.onChange = fn;
+  }
+
+  loadRaw(docs: T[]) {
+    this.documents.clear();
+    for (const d of docs) {
+      if (d && d._id) {
+        this.documents.set(d._id, d);
+      }
+    }
+  }
+
+  dumpRaw(): T[] {
+    return Array.from(this.documents.values());
+  }
 
   generateId(): string {
     return crypto.randomBytes(12).toString('hex');
@@ -143,14 +176,25 @@ export class MongoCollection<T extends BaseDoc> {
       updatedAt: now,
     } as T;
     this.documents.set(id, fullDoc);
+    this.onChange?.();
     return fullDoc;
   }
 
   async insertMany(docs: Array<Omit<T, '_id' | 'createdAt' | 'updatedAt'> & Partial<BaseDoc>>): Promise<T[]> {
     const created: T[] = [];
     for (const d of docs) {
-      created.push(await this.insertOne(d));
+      const now = new Date().toISOString();
+      const id = d._id || this.generateId();
+      const fullDoc = {
+        ...d,
+        _id: id,
+        createdAt: (d as any).createdAt || now,
+        updatedAt: now,
+      } as T;
+      this.documents.set(id, fullDoc);
+      created.push(fullDoc);
     }
+    this.onChange?.();
     return created;
   }
 
@@ -172,17 +216,22 @@ export class MongoCollection<T extends BaseDoc> {
       updatedAt: new Date().toISOString(),
     };
     this.documents.set(targetId, updated);
+    this.onChange?.();
     return updated;
   }
 
   async deleteOne(id: string): Promise<boolean> {
-    return this.documents.delete(id);
+    const deleted = this.documents.delete(id);
+    if (deleted) this.onChange?.();
+    return deleted;
   }
 
   async count(): Promise<number> {
     return this.documents.size;
   }
 }
+
+const STORE_FILE = path.resolve(process.cwd(), 'server', 'data', 'store.json');
 
 // Database instance containing all MongoDB collections
 export class Database {
@@ -192,8 +241,117 @@ export class Database {
   reviews = new MongoCollection<ReviewDoc>('reviews');
   loyaltyRewards = new MongoCollection<LoyaltyRewardDoc>('loyaltyRewards');
   notifications = new MongoCollection<NotificationDoc>('notifications');
+  visits = new MongoCollection<VisitDoc>('visits');
+
+  private saveTimer: NodeJS.Timeout | null = null;
+  private isHydrating = false;
+
+  constructor() {
+    const scheduleSave = () => {
+      if (this.isHydrating) return;
+      if (this.saveTimer) clearTimeout(this.saveTimer);
+      this.saveTimer = setTimeout(() => {
+        this.persistToDisk();
+      }, 250);
+    };
+
+    this.users.setChangeListener(scheduleSave);
+    this.providers.setChangeListener(scheduleSave);
+    this.bookings.setChangeListener(scheduleSave);
+    this.reviews.setChangeListener(scheduleSave);
+    this.loyaltyRewards.setChangeListener(scheduleSave);
+    this.notifications.setChangeListener(scheduleSave);
+    this.visits.setChangeListener(scheduleSave);
+  }
+
+  private hydrateFromDisk() {
+    try {
+      if (!fs.existsSync(STORE_FILE)) return;
+      const raw = fs.readFileSync(STORE_FILE, 'utf-8');
+      const parsed = JSON.parse(raw);
+      this.isHydrating = true;
+      if (Array.isArray(parsed.users)) this.users.loadRaw(parsed.users);
+      if (Array.isArray(parsed.providers)) this.providers.loadRaw(parsed.providers);
+      if (Array.isArray(parsed.bookings)) this.bookings.loadRaw(parsed.bookings);
+      if (Array.isArray(parsed.reviews)) this.reviews.loadRaw(parsed.reviews);
+      if (Array.isArray(parsed.loyaltyRewards)) this.loyaltyRewards.loadRaw(parsed.loyaltyRewards);
+      if (Array.isArray(parsed.notifications)) this.notifications.loadRaw(parsed.notifications);
+      if (Array.isArray(parsed.visits)) this.visits.loadRaw(parsed.visits);
+    } catch {
+      // Ignore corrupt or missing persistence file
+    } finally {
+      this.isHydrating = false;
+    }
+  }
+
+  private persistToDisk() {
+    try {
+      fs.mkdirSync(path.dirname(STORE_FILE), { recursive: true });
+      const payload = {
+        users: this.users.dumpRaw(),
+        providers: this.providers.dumpRaw(),
+        bookings: this.bookings.dumpRaw(),
+        reviews: this.reviews.dumpRaw(),
+        loyaltyRewards: this.loyaltyRewards.dumpRaw(),
+        notifications: this.notifications.dumpRaw(),
+        visits: this.visits.dumpRaw().slice(-10000),
+      };
+      fs.writeFileSync(STORE_FILE, JSON.stringify(payload), 'utf-8');
+    } catch {
+      // Non-fatal if filesystem is read-only
+    }
+  }
 
   async seed() {
+    this.hydrateFromDisk();
+
+    // Ensure demo accounts always exist right from boot
+    if (!(await this.users.findOne({ email: 'admin@glamtrack.ug' }))) {
+      const salt = await bcrypt.genSalt(10);
+      await this.users.insertOne({
+        _id: 'usr_admin_derick',
+        name: 'Mabirizi Derick',
+        email: 'admin@glamtrack.ug',
+        passwordHash: await bcrypt.hash('AdminPass123!', salt),
+        role: 'admin',
+        phone: '+256 701 234 567',
+        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80',
+        location: { lat: 0.3476, lng: 32.5825, address: 'Kololo, Kampala, Uganda' },
+        loyaltyPoints: 10000,
+        loyaltyTier: 'VIP Luxe',
+      });
+    }
+    if (!(await this.users.findOne({ email: 'claire.valmont@example.com' }))) {
+      const salt = await bcrypt.genSalt(10);
+      await this.users.insertOne({
+        _id: 'usr_claire_valmont',
+        name: 'Amina Namubiru',
+        email: 'claire.valmont@example.com',
+        passwordHash: await bcrypt.hash('GlamPass123!', salt),
+        role: 'customer',
+        phone: '+256 772 392 881',
+        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+        location: { lat: 0.3345, lng: 32.5892, address: 'Plot 14 Acacia Avenue, Kololo, Kampala' },
+        loyaltyPoints: 1450,
+        loyaltyTier: 'Gold',
+      });
+    }
+    if (!(await this.users.findOne({ email: 'camille.nailstudio@example.com' }))) {
+      const salt = await bcrypt.genSalt(10);
+      await this.users.insertOne({
+        _id: 'usr_camille_provider',
+        name: 'Camille Nabatanzi',
+        email: 'camille.nailstudio@example.com',
+        passwordHash: await bcrypt.hash('StylistPass123!', salt),
+        role: 'provider',
+        phone: '+256 752 782 990',
+        avatar: '/src/assets/images/uganda_nail_art_paints_1791276351476.jpg',
+        location: { lat: 0.3345, lng: 32.5892, address: 'Plot 14 Acacia Avenue, Kololo' },
+        loyaltyPoints: 3200,
+        loyaltyTier: 'VIP Luxe',
+      });
+    }
+
     if (await this.providers.count() > 0) return;
 
     // Seed Ugandan Salons & Beauty Stylists (Kampala, Uganda)

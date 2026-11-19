@@ -33,10 +33,10 @@ export const FaqSection: React.FC = () => {
   const [openIdx, setOpenIdx] = useState<number | null>(0);
 
   return (
-    <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-stone-800">
-      <div className="text-center mb-10">
-        <div className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-widest text-amber-400 bg-amber-950/60 border border-amber-500/30 px-3 py-1 rounded-full mb-3">
-          <HelpCircle className="w-3.5 h-3.5 text-amber-400" />
+    <section className="max-w-4xl mx-auto px-3 sm:px-6 lg:px-8 py-10 sm:py-16 border-t border-stone-800">
+      <div className="text-center mb-8 sm:mb-10">
+        <div className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-mono uppercase tracking-widest text-amber-400 bg-amber-950/60 border border-amber-500/30 px-3 py-1 rounded-full mb-3">
+          <HelpCircle className="w-3.5 h-3.5 text-amber-400 shrink-0" />
           <span>Frequently Asked Questions</span>
         </div>
         <h2 className="text-2xl sm:text-4xl font-serif font-bold text-white tracking-tight">
@@ -47,7 +47,7 @@ export const FaqSection: React.FC = () => {
         </p>
       </div>
 
-      <div className="space-y-3.5">
+      <div className="space-y-3 sm:space-y-3.5">
         {FAQS.map((faq, i) => {
           const isOpen = openIdx === i;
           return (
@@ -57,7 +57,7 @@ export const FaqSection: React.FC = () => {
             >
               <button
                 onClick={() => setOpenIdx(isOpen ? null : i)}
-                className="w-full p-4 sm:p-5 text-left flex items-center justify-between gap-4 cursor-pointer hover:bg-stone-850/80 transition-colors"
+                className="w-full p-4 sm:p-5 text-left flex items-center justify-between gap-3 sm:gap-4 cursor-pointer hover:bg-stone-800/70 transition-colors"
               >
                 <span className="text-xs sm:text-sm font-semibold text-stone-200">
                   {faq.q}

@@ -55,23 +55,23 @@ export const LoyaltyHub: React.FC<LoyaltyHubProps> = ({
   };
 
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+    <section className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-10 sm:py-14">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 pb-5 border-b border-stone-800">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 sm:gap-6 mb-6 sm:mb-10 pb-4 sm:pb-5 border-b border-stone-800">
         <div>
-          <div className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-widest text-amber-400 bg-amber-950/60 border border-amber-500/30 px-3 py-1 rounded-full mb-2">
-            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+          <div className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-mono uppercase tracking-widest text-amber-400 bg-amber-950/60 border border-amber-500/30 px-3 py-1 rounded-full mb-2">
+            <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />
             <span>Banda Services Privilege Club</span>
           </div>
           <h2 className="text-2xl sm:text-4xl font-serif font-bold text-white tracking-tight">
-            Loyalty Rewards & VIP Tiers
+            Loyalty Rewards &amp; VIP Tiers
           </h2>
           <p className="text-xs sm:text-sm text-stone-300 mt-1 max-w-xl">
             Earn 1 point for every UGX 500 spent on beauty appointments across Kampala.
           </p>
         </div>
-        <div className="text-xs font-mono text-amber-300 bg-stone-900/90 border border-stone-800 px-3.5 py-2 rounded-xl backdrop-blur-md">
-          Automatic Points on MTN/Airtel Checkout
+        <div className="text-xs font-mono text-amber-300 bg-stone-900/90 border border-stone-800 px-3.5 py-2 rounded-xl backdrop-blur-md self-start md:self-auto">
+          Automatic Points on Checkout
         </div>
       </div>
 
@@ -82,21 +82,21 @@ export const LoyaltyHub: React.FC<LoyaltyHubProps> = ({
       )}
 
       {/* Tier Status Banner */}
-      <div className="bg-gradient-to-r from-stone-900 via-stone-850 to-stone-900 text-white rounded-3xl p-6 sm:p-10 mb-12 shadow-2xl border border-stone-700/80 relative overflow-hidden">
+      <div className="bg-gradient-to-r from-stone-900 via-stone-800 to-stone-900 text-white rounded-2xl sm:rounded-3xl p-5 sm:p-10 mb-8 sm:mb-12 shadow-2xl border border-stone-700/80 relative overflow-hidden">
         <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-gradient-to-l from-amber-500/10 to-transparent pointer-events-none" />
 
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8 items-center relative z-10">
           <div className="md:col-span-7 space-y-4">
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <span className="px-3 py-1 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 text-stone-950 text-xs font-mono font-bold uppercase tracking-wider shadow-sm">
                 {currentTier} Member
               </span>
               <span className="text-xs text-stone-400">· Member #{user?._id?.slice(0, 8) || 'BANDA-2026'}</span>
             </div>
 
-            <div className="text-3xl sm:text-5xl font-serif font-bold">
+            <div className="text-2xl sm:text-5xl font-serif font-bold">
               <span className="font-mono tabular-nums text-amber-300">{points.toLocaleString()}</span>{' '}
-              <span className="text-xl sm:text-2xl text-stone-300 font-sans font-normal">Available Points</span>
+              <span className="text-base sm:text-2xl text-stone-300 font-sans font-normal">Available Points</span>
             </div>
 
             {/* Progress to next tier */}
@@ -142,15 +142,15 @@ export const LoyaltyHub: React.FC<LoyaltyHubProps> = ({
       </div>
 
       {/* Rewards Catalog */}
-      <div className="mb-10">
-        <div className="flex items-center justify-between mb-6">
+      <div className="mb-8 sm:mb-10">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-5 sm:mb-6">
           <h3 className="text-xl sm:text-2xl font-serif font-bold text-white">
-            Redeem Exclusive Rewards & Vouchers
+            Redeem Exclusive Rewards &amp; Vouchers
           </h3>
           <span className="text-xs text-stone-400">Apply coupon code at checkout</span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {rewards.map((reward) => {
             const canAfford = points >= reward.pointsRequired;
             const isRedeeming = redeemingId === reward._id;
@@ -159,7 +159,7 @@ export const LoyaltyHub: React.FC<LoyaltyHubProps> = ({
             return (
               <div
                 key={reward._id}
-                className="bg-stone-900/85 backdrop-blur-xl rounded-2xl border border-stone-800 p-6 shadow-xl flex flex-col justify-between hover:border-amber-400/40 transition-all space-y-4"
+                className="bg-stone-900/85 backdrop-blur-xl rounded-2xl border border-stone-800 p-4 sm:p-6 shadow-xl flex flex-col justify-between hover:border-amber-400/40 transition-all space-y-4"
               >
                 <div>
                   <div className="flex items-center justify-between mb-3">

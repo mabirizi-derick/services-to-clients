@@ -55,30 +55,30 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({
   };
 
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+    <section className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-10 sm:py-14">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 pb-5 border-b border-stone-800">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 sm:gap-6 mb-6 sm:mb-10 pb-4 sm:pb-5 border-b border-stone-800">
         <div>
-          <div className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-widest text-amber-400 bg-amber-950/60 border border-amber-500/30 px-3 py-1 rounded-full mb-2">
-            <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+          <div className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-mono uppercase tracking-widest text-amber-400 bg-amber-950/60 border border-amber-500/30 px-3 py-1 rounded-full mb-2">
+            <ShieldCheck className="w-3.5 h-3.5 text-amber-400 shrink-0" />
             <span>Verified Community Feedback</span>
           </div>
           <h2 className="text-2xl sm:text-4xl font-serif font-bold text-white tracking-tight">
-            Client Testimonials & Ratings
+            Client Testimonials &amp; Ratings
           </h2>
           <p className="text-xs sm:text-sm text-stone-300 mt-1 max-w-xl">
             Real feedback from Kampala residents and university students across Kololo, Bukoto, Bugolobi, and hostels.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 w-full md:w-auto">
           {/* Provider Filter */}
           <select
             value={selectedProviderId}
             onChange={(e) => setSelectedProviderId(e.target.value)}
-            className="px-3 py-2 text-xs bg-stone-900/90 border border-stone-700 rounded-xl text-stone-200 focus:outline-none focus:ring-1 focus:ring-amber-400 cursor-pointer"
+            className="px-3 py-2.5 sm:py-2 text-xs bg-stone-900/90 border border-stone-700 rounded-xl text-stone-200 focus:outline-none focus:ring-1 focus:ring-amber-400 cursor-pointer w-full sm:w-auto"
           >
-            <option value="all">All Salons & Stylists</option>
+            <option value="all">All Salons &amp; Stylists</option>
             {providers.map((p) => (
               <option key={p._id} value={p._id} className="bg-stone-900 text-white">
                 {p.businessName}
@@ -89,7 +89,7 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({
           {/* Write a Review Button */}
           <button
             onClick={() => setIsWriteModalOpen(true)}
-            className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-stone-950 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 rounded-xl transition-all cursor-pointer shadow-md shadow-amber-500/20"
+            className="flex items-center justify-center gap-1.5 px-4 py-2.5 sm:py-2 text-xs font-bold text-stone-950 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 rounded-xl transition-all cursor-pointer shadow-md shadow-amber-500/20 whitespace-nowrap"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>Write a Review</span>
@@ -98,23 +98,27 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({
       </div>
 
       {/* Reviews Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
         {filteredReviews.map((review) => {
           const provider = providers.find((p) => p._id === review.providerId);
           return (
             <div
               key={review._id}
-              className="bg-stone-900/85 backdrop-blur-xl rounded-2xl border border-stone-800 p-6 shadow-xl space-y-3.5 hover:border-amber-400/40 transition-all"
+              className="bg-stone-900/85 backdrop-blur-xl rounded-2xl border border-stone-800 p-4 sm:p-6 shadow-xl space-y-3 sm:space-y-3.5 hover:border-amber-400/40 transition-all"
             >
-              <div className="flex items-start justify-between">
-                <div>
+              <div className="flex flex-wrap items-start justify-between gap-2">
+                <div className="min-w-0">
                   <div className="font-serif font-bold text-white text-base">
                     {review.customerName}
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-stone-400 mt-0.5">
+                  <div className="flex flex-wrap items-center gap-1.5 text-xs text-stone-400 mt-0.5">
                     <span className="text-amber-300 font-medium">{review.serviceName}</span>
-                    <span aria-hidden="true" className="text-stone-700">·</span>
-                    <span className="font-medium text-stone-300">{provider?.businessName}</span>
+                    {provider?.businessName && (
+                      <>
+                        <span aria-hidden="true" className="text-stone-700">·</span>
+                        <span className="font-medium text-stone-300">{provider.businessName}</span>
+                      </>
+                    )}
                   </div>
                 </div>
 
@@ -149,8 +153,8 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({
 
       {/* Write a Review Modal */}
       {isWriteModalOpen && (
-        <div className="fixed inset-0 z-50 bg-stone-950/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-stone-900 w-full max-w-lg rounded-2xl shadow-2xl border border-stone-700 p-6 space-y-4">
+        <div className="fixed inset-0 z-50 bg-stone-950/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+          <div className="bg-stone-900 w-full max-w-lg rounded-2xl shadow-2xl border border-stone-700 p-4 sm:p-6 space-y-4 max-h-[92vh] overflow-y-auto">
             <div className="flex items-center justify-between pb-3 border-b border-stone-800">
               <div>
                 <div className="text-[10px] font-mono uppercase tracking-wider font-semibold text-amber-400">

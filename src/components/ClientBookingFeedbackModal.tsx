@@ -24,31 +24,31 @@ export const ClientBookingFeedbackModal: React.FC<ClientBookingFeedbackModalProp
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-stone-950/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 animate-fade-in">
-      <div className="bg-stone-900 text-stone-100 w-full max-w-lg rounded-3xl shadow-2xl border border-stone-700/80 overflow-hidden my-6">
+      <div className="bg-stone-900 text-stone-100 w-full max-w-lg rounded-2xl sm:rounded-3xl shadow-2xl border border-stone-700/80 overflow-hidden my-2 sm:my-6 flex flex-col max-h-[92vh]">
         
         {/* Header Banner */}
         <div
-          className={`px-6 py-5 border-b flex items-center gap-3 ${
+          className={`px-4 sm:px-6 py-4 sm:py-5 border-b flex items-center gap-3 shrink-0 ${
             isAccepted
               ? 'bg-gradient-to-r from-emerald-950 via-stone-950 to-emerald-950 border-emerald-500/30'
               : 'bg-gradient-to-r from-rose-950 via-stone-950 to-rose-950 border-rose-500/30'
           }`}
         >
           <div
-            className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-lg ${
+            className={`w-11 h-11 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-lg ${
               isAccepted
                 ? 'bg-emerald-500 text-stone-950 shadow-emerald-500/30'
                 : 'bg-rose-500 text-white shadow-rose-500/30'
             }`}
           >
             {isAccepted ? (
-              <CheckCircle2 className="w-7 h-7 stroke-2.5" />
+              <CheckCircle2 className="w-6 h-6 sm:w-7 sm:h-7 stroke-[2.5]" />
             ) : (
-              <XCircle className="w-7 h-7 stroke-2.5" />
+              <XCircle className="w-6 h-6 sm:w-7 sm:h-7 stroke-[2.5]" />
             )}
           </div>
 
-          <div>
+          <div className="min-w-0">
             <div
               className={`text-[10px] font-mono uppercase tracking-widest font-bold ${
                 isAccepted ? 'text-emerald-400' : 'text-rose-400'
@@ -56,14 +56,14 @@ export const ClientBookingFeedbackModal: React.FC<ClientBookingFeedbackModalProp
             >
               {isAccepted ? 'FEEDBACK: PROVIDER IS AVAILABLE' : 'FEEDBACK: PROVIDER NOT AVAILABLE'}
             </div>
-            <h3 className="text-xl font-serif font-bold text-white">
+            <h3 className="text-lg sm:text-xl font-serif font-bold text-white leading-snug">
               {isAccepted ? 'Booking Confirmed & Dispatched!' : 'Stylist Unavailable at This Time'}
             </h3>
           </div>
         </div>
 
         {/* Content Body */}
-        <div className="p-6 space-y-5">
+        <div className="p-4 sm:p-6 space-y-4 sm:space-y-5 overflow-y-auto flex-1">
           {/* Main Feedback Message */}
           {isAccepted ? (
             <div className="bg-emerald-950/30 border border-emerald-500/30 rounded-2xl p-4 text-xs space-y-2">
@@ -86,20 +86,20 @@ export const ClientBookingFeedbackModal: React.FC<ClientBookingFeedbackModalProp
           )}
 
           {/* Booking Summary Card */}
-          <div className="bg-stone-950/80 rounded-2xl p-4 border border-stone-800 space-y-3 text-xs">
-            <div className="flex items-center justify-between pb-2 border-b border-stone-800">
-              <span className="text-stone-400 font-medium">Service Provider</span>
-              <span className="text-white font-semibold">{booking.providerName}</span>
+          <div className="bg-stone-950/80 rounded-2xl p-3.5 sm:p-4 border border-stone-800 space-y-3 text-xs">
+            <div className="flex items-start justify-between gap-3 pb-2 border-b border-stone-800">
+              <span className="text-stone-400 font-medium shrink-0">Service Provider</span>
+              <span className="text-white font-semibold text-right break-words">{booking.providerName}</span>
             </div>
 
-            <div className="flex items-center justify-between pb-2 border-b border-stone-800">
-              <span className="text-stone-400 font-medium">Destination</span>
-              <span className="text-stone-200 truncate max-w-[240px]">{booking.address}</span>
+            <div className="flex items-start justify-between gap-3 pb-2 border-b border-stone-800">
+              <span className="text-stone-400 font-medium shrink-0">Destination</span>
+              <span className="text-stone-200 text-right break-words max-w-[65%]">{booking.address}</span>
             </div>
 
-            <div className="flex items-center justify-between">
-              <span className="text-stone-400 font-medium">Services</span>
-              <span className="text-amber-400 font-semibold">{booking.services.map((s) => s.name).join(', ')}</span>
+            <div className="flex items-start justify-between gap-3">
+              <span className="text-stone-400 font-medium shrink-0">Services</span>
+              <span className="text-amber-400 font-semibold text-right break-words max-w-[65%]">{booking.services.map((s) => s.name).join(', ')}</span>
             </div>
           </div>
 
@@ -118,13 +118,13 @@ export const ClientBookingFeedbackModal: React.FC<ClientBookingFeedbackModalProp
         </div>
 
         {/* Modal Action Buttons */}
-        <div className="p-6 bg-stone-950 border-t border-stone-800 flex items-center justify-end gap-3">
+        <div className="p-4 sm:p-6 bg-stone-950 border-t border-stone-800 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5 sm:gap-3 shrink-0">
           {isAccepted ? (
             <>
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 text-xs font-semibold text-stone-400 hover:text-white transition-colors cursor-pointer"
+                className="w-full sm:w-auto px-4 py-2.5 sm:py-2 text-xs font-semibold text-stone-400 hover:text-white transition-colors cursor-pointer text-center"
               >
                 Dismiss
               </button>
@@ -134,7 +134,7 @@ export const ClientBookingFeedbackModal: React.FC<ClientBookingFeedbackModalProp
                   onClose();
                   onTrackGps();
                 }}
-                className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-stone-950 font-bold text-xs shadow-lg shadow-emerald-500/20 transition-all cursor-pointer flex items-center gap-1.5"
+                className="w-full sm:w-auto justify-center px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-stone-950 font-bold text-xs shadow-lg shadow-emerald-500/20 transition-all cursor-pointer flex items-center gap-1.5"
               >
                 <Navigation className="w-3.5 h-3.5" />
                 <span>Track Provider on GPS</span>
@@ -145,7 +145,7 @@ export const ClientBookingFeedbackModal: React.FC<ClientBookingFeedbackModalProp
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 text-xs font-semibold text-stone-400 hover:text-white transition-colors cursor-pointer"
+                className="w-full sm:w-auto px-4 py-2.5 sm:py-2 text-xs font-semibold text-stone-400 hover:text-white transition-colors cursor-pointer text-center"
               >
                 Close
               </button>
@@ -156,7 +156,7 @@ export const ClientBookingFeedbackModal: React.FC<ClientBookingFeedbackModalProp
                     onClose();
                     onChooseAlternativeProvider();
                   }}
-                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-stone-950 font-bold text-xs shadow-lg shadow-amber-500/20 transition-all cursor-pointer flex items-center gap-1.5"
+                  className="w-full sm:w-auto justify-center px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-stone-950 font-bold text-xs shadow-lg shadow-amber-500/20 transition-all cursor-pointer flex items-center gap-1.5"
                 >
                   <ArrowRight className="w-3.5 h-3.5" />
                   <span>Choose Another Provider</span>

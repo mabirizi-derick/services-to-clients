@@ -26,11 +26,11 @@ export const PricingGuideSection: React.FC = () => {
   ];
 
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+    <section className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-10 sm:py-16">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6 sm:mb-8">
         <div>
-          <div className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-widest text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-3 py-1 rounded-full mb-2">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+          <div className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-mono uppercase tracking-widest text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-3 py-1 rounded-full mb-2">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
             <span>Zero Hidden Fees</span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-serif font-bold text-white tracking-tight">
@@ -40,39 +40,39 @@ export const PricingGuideSection: React.FC = () => {
             Standardized, honest rates across our Kololo, Bukoto, Bugolobi, Nakasero, and hostel mobile networks. All quotes in Ugandan Shillings (UGX).
           </p>
         </div>
-        <div className="inline-flex items-center gap-2 text-xs text-amber-300 bg-stone-900/90 border border-stone-800 px-3.5 py-2 rounded-xl backdrop-blur-md">
-          <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+        <div className="inline-flex items-center gap-2 text-xs text-amber-300 bg-stone-900/90 border border-stone-800 px-3.5 py-2 rounded-xl backdrop-blur-md self-start md:self-auto">
+          <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />
           <span>Includes standard mobile sanitization kit</span>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-8">
         {tiers.map((tier, idx) => (
           <div
             key={idx}
             className="bg-stone-900/85 backdrop-blur-xl rounded-2xl border border-stone-800 overflow-hidden shadow-xl"
           >
-            <div className="bg-stone-950/80 px-6 py-4 border-b border-stone-800 flex items-center justify-between">
-              <h3 className="font-serif font-bold text-white text-lg">
+            <div className="bg-stone-950/80 px-4 sm:px-6 py-3.5 sm:py-4 border-b border-stone-800 flex items-center justify-between gap-2">
+              <h3 className="font-serif font-bold text-white text-base sm:text-lg">
                 {tier.category}
               </h3>
-              <span className="text-[11px] font-mono text-amber-400 font-semibold bg-amber-950/70 border border-amber-500/30 px-2.5 py-0.5 rounded-full">
+              <span className="text-[10px] sm:text-[11px] font-mono text-amber-400 font-semibold bg-amber-950/70 border border-amber-500/30 px-2.5 py-0.5 rounded-full shrink-0">
                 Standard Rates
               </span>
             </div>
 
-            <div className="p-6 divide-y divide-stone-800/80">
+            <div className="p-4 sm:p-6 divide-y divide-stone-800/80">
               {tier.items.map((item, i) => (
-                <div key={i} className="py-3.5 first:pt-0 last:pb-0 flex items-center justify-between gap-4">
+                <div key={i} className="py-3 sm:py-3.5 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-4">
                   <div>
-                    <div className="text-xs sm:text-sm font-semibold text-stone-200">
+                    <div className="text-xs sm:text-sm font-semibold text-stone-200 leading-snug">
                       {item.service}
                     </div>
                     <div className="text-[11px] text-stone-400 mt-0.5">
                       Est. duration: {item.time}
                     </div>
                   </div>
-                  <div className="text-right shrink-0">
+                  <div className="sm:text-right shrink-0">
                     <span className="font-mono tabular-nums text-xs sm:text-sm font-bold text-amber-300">
                       {item.price}
                     </span>

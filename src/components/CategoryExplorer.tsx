@@ -110,22 +110,22 @@ export const CategoryExplorer: React.FC<CategoryExplorerProps> = ({
   };
 
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <section className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-10 sm:py-16">
       {/* Header with updated h2 title */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6 sm:mb-8">
         <div>
-          <div className="text-xs font-mono uppercase tracking-widest text-emerald-400 mb-1">
-            Comprehensive Beauty Menu & Verified Artisans
+          <div className="text-[11px] sm:text-xs font-mono uppercase tracking-widest text-emerald-400 mb-1">
+            Comprehensive Beauty Menu &amp; Verified Artisans
           </div>
           <h2 className="text-2xl sm:text-4xl font-serif font-bold text-white tracking-tight">
-            Explore All Services, Treatments & Service Providers
+            Explore All Services, Treatments &amp; Service Providers
           </h2>
           <p className="text-xs sm:text-sm text-stone-300 mt-1 max-w-xl">
-            Click any service below to view verified Ugandan service providers specializing in that treatment, or browse all 9 certified providers across Kampala.
+            Tap any service below to view verified Ugandan service providers specializing in that treatment, or browse all 9 certified providers across Kampala.
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="text-xs text-amber-300 font-semibold bg-stone-900/90 border border-stone-800 px-3.5 py-1.5 rounded-xl shadow-sm">
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="text-xs text-amber-300 font-semibold bg-stone-900/90 border border-stone-800 px-3 py-1.5 rounded-xl shadow-sm">
             <span>9 Verified Kampala Service Providers</span>
           </div>
           {selectedServiceId && (
@@ -140,7 +140,7 @@ export const CategoryExplorer: React.FC<CategoryExplorerProps> = ({
       </div>
 
       {/* Services Grid (Clicking gives list of service providers) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-12">
         {categories.map((cat) => {
           const Icon = cat.icon;
           const isSelected = selectedServiceId === cat.id;
@@ -149,10 +149,10 @@ export const CategoryExplorer: React.FC<CategoryExplorerProps> = ({
             <div
               key={cat.id}
               onClick={() => handleCardClick(cat)}
-              className={`group p-6 rounded-2xl border backdrop-blur-md shadow-xl transition-all cursor-pointer flex flex-col justify-between ${
+              className={`group p-4 sm:p-6 rounded-2xl border backdrop-blur-md shadow-xl transition-all cursor-pointer flex flex-col justify-between ${
                 isSelected
-                  ? 'bg-amber-950/40 border-amber-400 shadow-2xl ring-2 ring-amber-400/50 -translate-y-1'
-                  : 'bg-stone-900/85 border-stone-800 hover:border-amber-400/50 hover:bg-stone-850/90'
+                  ? 'bg-amber-950/40 border-amber-400 shadow-2xl ring-2 ring-amber-400/50 -translate-y-0.5'
+                  : 'bg-stone-900/85 border-stone-800 hover:border-amber-400/50 hover:bg-stone-800/90'
               }`}
             >
               <div>
@@ -211,18 +211,18 @@ export const CategoryExplorer: React.FC<CategoryExplorerProps> = ({
       </div>
 
       {/* Selected Service Providers List Section */}
-      <div className="bg-stone-900/90 backdrop-blur-xl rounded-3xl p-6 sm:p-8 border border-stone-800 shadow-2xl space-y-6 ring-1 ring-white/5">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-stone-800">
+      <div className="bg-stone-900/90 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-4 sm:p-8 border border-stone-800 shadow-2xl space-y-5 sm:space-y-6 ring-1 ring-white/5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-stone-800">
           <div>
-            <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-amber-400 mb-1">
-              <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+            <div className="inline-flex items-center gap-2 text-[11px] sm:text-xs font-mono uppercase tracking-widest text-amber-400 mb-1">
+              <ShieldCheck className="w-3.5 h-3.5 text-amber-400 shrink-0" />
               <span>
                 {activeCategory
                   ? `Service Providers for: "${activeCategory.title}"`
                   : 'All 9 Verified Kampala Service Providers'}
               </span>
             </div>
-            <h3 className="text-xl sm:text-2xl font-serif font-bold text-white">
+            <h3 className="text-lg sm:text-2xl font-serif font-bold text-white">
               {activeCategory
                 ? `Available Service Providers (${displayedProviders.length})`
                 : 'All 9 Service Providers Ready for Dispatch'}
@@ -245,7 +245,7 @@ export const CategoryExplorer: React.FC<CategoryExplorerProps> = ({
         </div>
 
         {/* 9 Service Providers Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {displayedProviders.map((provider) => (
             <article
               key={provider._id}
@@ -286,9 +286,9 @@ export const CategoryExplorer: React.FC<CategoryExplorerProps> = ({
               </div>
 
               {/* Provider Info */}
-              <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
+              <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between space-y-3 sm:space-y-4">
                 <div>
-                  <div className="flex items-center gap-2 text-xs text-stone-400 mb-1.5">
+                  <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs text-stone-400 mb-1.5">
                     <span className="text-amber-400 font-medium">
                       {provider.type === 'nail_salon'
                         ? 'Nail Studio & Art'
@@ -306,12 +306,12 @@ export const CategoryExplorer: React.FC<CategoryExplorerProps> = ({
 
                   <h4
                     onClick={() => onSelectProvider?.(provider)}
-                    className="text-lg font-serif font-bold text-white hover:text-amber-300 transition-colors cursor-pointer leading-snug"
+                    className="text-base sm:text-lg font-serif font-bold text-white hover:text-amber-300 transition-colors cursor-pointer leading-snug"
                   >
                     {provider.businessName}
                   </h4>
 
-                  <div className="flex items-center gap-1.5 text-xs text-stone-300 mt-1">
+                  <div className="flex flex-wrap items-center gap-1.5 text-xs text-stone-300 mt-1">
                     <MapPin className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                     <span>{provider.location.city}</span>
                     <span className="text-stone-600">·</span>
@@ -325,8 +325,8 @@ export const CategoryExplorer: React.FC<CategoryExplorerProps> = ({
                   {/* Highlighted Service with Price */}
                   {provider.services && provider.services.length > 0 && (
                     <div className="mt-3 pt-3 border-t border-stone-800/80">
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="text-stone-300 font-medium truncate pr-2">
+                      <div className="flex items-center justify-between gap-2 text-xs">
+                        <span className="text-stone-300 font-medium truncate">
                           {provider.services[0].name}
                         </span>
                         <span className="font-mono font-bold text-amber-300 shrink-0">
@@ -338,19 +338,19 @@ export const CategoryExplorer: React.FC<CategoryExplorerProps> = ({
                 </div>
 
                 {/* Actions */}
-                <div className="pt-3 border-t border-stone-800 flex items-center gap-2">
+                <div className="pt-3 border-t border-stone-800 grid grid-cols-2 gap-2">
                   <button
                     onClick={() => onSelectProvider?.(provider)}
-                    className="flex-1 py-2 px-2.5 text-xs font-semibold text-stone-300 bg-stone-900 hover:bg-stone-800 hover:text-white border border-stone-700/80 rounded-xl transition-colors cursor-pointer text-center"
+                    className="py-2.5 px-2 text-xs font-semibold text-stone-300 bg-stone-900 hover:bg-stone-800 hover:text-white border border-stone-700/80 rounded-xl transition-colors cursor-pointer text-center truncate"
                   >
                     View Profile
                   </button>
                   <button
                     onClick={() => onBookService?.(provider, provider.services[0])}
-                    className="flex-1 py-2 px-2.5 text-xs font-bold text-stone-950 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1 shadow-md shadow-amber-500/20 whitespace-nowrap"
+                    className="py-2.5 px-2 text-xs font-bold text-stone-950 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1 shadow-md shadow-amber-500/20 whitespace-nowrap"
                   >
-                    <span>Select & Book</span>
-                    <ChevronRight className="w-3.5 h-3.5" />
+                    <span>Book Now</span>
+                    <ChevronRight className="w-3.5 h-3.5 shrink-0" />
                   </button>
                 </div>
               </div>

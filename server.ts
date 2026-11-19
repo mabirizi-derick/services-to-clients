@@ -11,6 +11,7 @@ import paymentRoutes from './server/routes/payments.js';
 import reviewRoutes from './server/routes/reviews.js';
 import loyaltyRoutes from './server/routes/loyalty.js';
 import notificationRoutes from './server/routes/notifications.js';
+import analyticsRoutes from './server/routes/analytics.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -34,6 +35,7 @@ async function startServer() {
   app.use('/api/reviews', reviewRoutes);
   app.use('/api/loyalty', loyaltyRoutes);
   app.use('/api/notifications', notificationRoutes);
+  app.use('/api/analytics', analyticsRoutes);
 
   // Health check endpoint
   app.get('/api/health', (req, res) => {
@@ -43,6 +45,21 @@ async function startServer() {
       version: '1.0.0',
       timestamp: new Date().toISOString(),
     });
+  });
+
+  // Ensure unmatched /api/* endpoints always return JSON instead of HTML
+  app.use('/api', (_req, res) => {
+    res.status(404).json({ error: 'API endpoint not found' });
+  });
+
+  // Global JSON error handler for Express middleware errors (e.g. malformed JSON body)
+  app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+    if (req.path.startsWith('/api')) {
+      return res.status(err.status || 500).json({
+        error: err.message || 'Internal server error',
+      });
+    }
+    next(err);
   });
 
   // Serve Frontend

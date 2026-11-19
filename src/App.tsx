@@ -130,6 +130,15 @@ export default function App() {
     loadData();
   }, []);
 
+  // Track active people & page views (hourly / daily / weekly / monthly analytics)
+  useEffect(() => {
+    api.recordVisit(activeTab, user);
+    const heartbeat = setInterval(() => {
+      api.recordVisit(activeTab, user);
+    }, 60000);
+    return () => clearInterval(heartbeat);
+  }, [activeTab, user?._id]);
+
   // Filter providers
   const filteredProviders = providers.filter((p) => {
     if (activeFilter === 'all') return true;
@@ -385,12 +394,12 @@ export default function App() {
             </div>
 
             {/* 6. Embedded Live GPS Satellite Map Section */}
-            <div className="bg-stone-900/85 backdrop-blur-md py-12 rounded-3xl my-8 border border-stone-800 shadow-2xl">
+            <div className="bg-stone-900/85 backdrop-blur-md py-8 sm:py-12 rounded-2xl sm:rounded-3xl my-6 sm:my-8 mx-3 sm:mx-6 lg:mx-8 border border-stone-800 shadow-2xl overflow-hidden">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-4">
                 <div className="text-xs font-semibold uppercase tracking-widest text-emerald-400 mb-1">
                   Interactive Geolocation Engine
                 </div>
-                <h3 className="text-2xl sm:text-3xl font-serif font-bold text-white">
+                <h3 className="text-xl sm:text-3xl font-serif font-bold text-white">
                   Live Satellite GPS Dispatch in Action
                 </h3>
                 <p className="text-xs text-stone-300">
@@ -544,7 +553,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen text-stone-100 bg-stone-950 flex flex-col font-sans relative selection:bg-amber-400 selection:text-stone-950">
+    <div className={`min-h-screen text-stone-100 bg-stone-950 flex flex-col font-sans relative selection:bg-amber-400 selection:text-stone-950 ${!isMobileView ? 'pb-16 lg:pb-0' : ''}`}>
       
       {/* Whole Document / Website Fixed Luxury Salon Image Background */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
@@ -561,7 +570,7 @@ export default function App() {
 
       {/* Toast Notification Banner */}
       {toast && (
-        <div className="fixed top-4 right-4 z-50 max-w-sm bg-stone-900 text-white px-4 py-3 rounded-xl shadow-xl border border-stone-700 flex items-center gap-3 animate-fade-in">
+        <div className="fixed top-20 left-3 right-3 sm:left-auto sm:right-4 z-50 sm:max-w-sm bg-stone-900/95 backdrop-blur-xl text-white px-4 py-3 rounded-xl shadow-xl border border-stone-700 flex items-center gap-3 animate-fade-in">
           {toast.type === 'reward' ? (
             <Sparkles className="w-5 h-5 text-amber-400 shrink-0" />
           ) : (

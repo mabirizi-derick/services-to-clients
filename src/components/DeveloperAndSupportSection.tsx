@@ -11,17 +11,17 @@ export const DeveloperAndSupportSection: React.FC<DeveloperAndSupportSectionProp
   onOpenLiveGps,
 }) => {
   return (
-    <section className="bg-stone-950/80 backdrop-blur-xl text-stone-200 py-16 border-t border-stone-800">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+    <section className="bg-stone-950/80 backdrop-blur-xl text-stone-200 py-10 sm:py-16 border-t border-stone-800">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 space-y-8 sm:space-y-12">
         
         {/* Section Heading */}
         <div className="text-center max-w-2xl mx-auto space-y-2">
-          <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-amber-400 bg-amber-950/60 border border-amber-500/30 px-3.5 py-1 rounded-full">
-            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            <span>Platform Engineering & Kampala Operations</span>
+          <div className="inline-flex items-center gap-2 text-[11px] sm:text-xs font-mono uppercase tracking-widest text-amber-400 bg-amber-950/60 border border-amber-500/30 px-3 sm:px-3.5 py-1 rounded-full">
+            <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+            <span>Platform Engineering &amp; Kampala Operations</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-serif font-bold text-white tracking-tight">
-            Banda Services · Developer & 24/7 Support Hub
+          <h2 className="text-2xl sm:text-4xl font-serif font-bold text-white tracking-tight">
+            Banda Services · Developer &amp; 24/7 Support Hub
           </h2>
           <p className="text-xs sm:text-sm text-stone-300 leading-relaxed">
             Crafted with modern scalable web standards, local Ugandan mobile money rails, and 24/7 dedicated client support.
@@ -29,10 +29,10 @@ export const DeveloperAndSupportSection: React.FC<DeveloperAndSupportSectionProp
         </div>
 
         {/* 3-Card Primary Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-8">
           
           {/* Card 1: About the Developer */}
-          <div className="bg-stone-900/85 backdrop-blur-xl rounded-2xl p-6 sm:p-8 border border-amber-500/30 relative flex flex-col justify-between space-y-6 shadow-xl hover:border-amber-400/60 transition-all">
+          <div className="bg-stone-900/85 backdrop-blur-xl rounded-2xl p-5 sm:p-8 border border-amber-500/30 relative flex flex-col justify-between space-y-5 sm:space-y-6 shadow-xl hover:border-amber-400/60 transition-all">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-amber-400 font-bold">
@@ -75,20 +75,20 @@ export const DeveloperAndSupportSection: React.FC<DeveloperAndSupportSectionProp
             </div>
 
             {/* Developer Contact CTA */}
-            <div className="pt-4 border-t border-stone-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div className="pt-4 border-t border-stone-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
               <a
                 href="mailto:mabiriziderick26@gmail.com"
-                className="inline-flex items-center gap-2 text-xs font-semibold text-amber-300 hover:text-white bg-amber-950/80 hover:bg-amber-900/90 px-3.5 py-2 rounded-xl transition-colors border border-amber-500/40"
+                className="inline-flex items-center gap-2 text-xs font-semibold text-amber-300 hover:text-white bg-amber-950/80 hover:bg-amber-900/90 px-3 py-2 rounded-xl transition-colors border border-amber-500/40 max-w-full"
               >
-                <Mail className="w-4 h-4 text-amber-400" />
-                <span>mabiriziderick26@gmail.com</span>
+                <Mail className="w-4 h-4 text-amber-400 shrink-0" />
+                <span className="truncate">mabiriziderick26@gmail.com</span>
               </a>
-              <span className="text-[11px] text-stone-400">Software Craftsman</span>
+              <span className="text-[11px] text-stone-400 shrink-0">Software Craftsman</span>
             </div>
           </div>
 
           {/* Card 2: 24/7 Kampala Customer Support */}
-          <div className="bg-stone-900/85 backdrop-blur-xl rounded-2xl p-6 sm:p-8 border border-stone-800 relative flex flex-col justify-between space-y-6 shadow-xl hover:border-emerald-500/40 transition-all">
+          <div className="bg-stone-900/85 backdrop-blur-xl rounded-2xl p-5 sm:p-8 border border-stone-800 relative flex flex-col justify-between space-y-5 sm:space-y-6 shadow-xl hover:border-emerald-500/40 transition-all">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-emerald-400 font-bold">
@@ -155,7 +155,7 @@ export const DeveloperAndSupportSection: React.FC<DeveloperAndSupportSectionProp
           </div>
 
           {/* Card 3: Brand & Security Assurance */}
-          <div className="bg-stone-900/85 backdrop-blur-xl rounded-2xl p-6 sm:p-8 border border-stone-800 relative flex flex-col justify-between space-y-6 shadow-xl hover:border-amber-400/40 transition-all">
+          <div className="bg-stone-900/85 backdrop-blur-xl rounded-2xl p-5 sm:p-8 border border-stone-800 relative flex flex-col justify-between space-y-5 sm:space-y-6 shadow-xl hover:border-amber-400/40 transition-all">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-amber-400 font-bold">

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Provider, Booking, User, ServiceItem } from '../types/index.ts';
 import { BEAUTY_GALLERY } from '../data/beautyGallery.ts';
-import { Plus, Trash2, CheckCircle2, ShieldCheck, MapPin, Zap, Clock, DollarSign, Store, Sparkles, X, Phone, User as UserIcon } from 'lucide-react';
+import { Plus, Trash2, CheckCircle2, ShieldCheck, MapPin, Zap, Clock, DollarSign, Store, Sparkles, X, Phone, User as UserIcon, BarChart3 } from 'lucide-react';
 import { api } from '../api/client.ts';
+import { SiteTrafficAnalytics } from './SiteTrafficAnalytics.tsx';
 
 interface AdminPortalProps {
   providers: Provider[];
@@ -21,6 +22,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
   onProviderUpdated,
   onSelectProvider,
 }) => {
+  const [adminView, setAdminView] = useState<'traffic' | 'providers'>('traffic');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
@@ -119,16 +121,16 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
+    <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-6 sm:space-y-8">
       {/* Admin Title & Add Button Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-stone-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 sm:pb-6 border-b border-stone-800">
         <div>
-          <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-emerald-400 mb-1">
-            <ShieldCheck className="w-4 h-4 text-emerald-400" />
+          <div className="flex items-center gap-2 text-[11px] sm:text-xs font-mono uppercase tracking-widest text-emerald-400 mb-1">
+            <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
             <span>Administrator Control Center · Uganda</span>
           </div>
           <h2 className="text-2xl sm:text-4xl font-serif font-bold text-white tracking-tight">
-            Platform Provider & Service Management
+            Platform Provider &amp; Service Management
           </h2>
           <p className="text-xs sm:text-sm text-stone-300 mt-1">
             Admin dashboard for Mabirizi Derick — add, configure, and monitor salons and mobile artists across Kampala.
@@ -140,7 +142,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
             setIsAddModalOpen(true);
             setErrorMsg('');
           }}
-          className="flex items-center gap-2 px-5 py-2.5 text-xs font-bold text-stone-950 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 rounded-xl transition-all shadow-md shadow-amber-500/20 cursor-pointer whitespace-nowrap"
+          className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 text-xs font-bold text-stone-950 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 rounded-xl transition-all shadow-md shadow-amber-500/20 cursor-pointer whitespace-nowrap"
         >
           <Plus className="w-4 h-4" />
           <span>Add New Service Provider</span>
@@ -155,7 +157,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
       )}
 
       {/* Admin Quick Metrics */}
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <div className="bg-stone-900/85 backdrop-blur-xl p-5 rounded-2xl border border-stone-800 shadow-xl">
           <div className="text-xs font-mono font-semibold text-stone-400 uppercase tracking-wider mb-1">
             Registered Salons
@@ -197,9 +199,41 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
         </div>
       </div>
 
-      {/* Existing Providers Management Table */}
-      <div className="bg-stone-900/85 backdrop-blur-xl rounded-2xl border border-stone-800 overflow-hidden shadow-xl">
-        <div className="p-5 border-b border-stone-800 bg-stone-950/80 flex items-center justify-between">
+      {/* Admin Sub-Navigation: Site Visitors (Hourly/Daily/Weekly/Monthly) vs Providers */}
+      <div className="grid grid-cols-2 sm:inline-flex gap-1.5 bg-stone-950/90 p-1.5 rounded-2xl border border-stone-800 w-full sm:w-auto">
+        <button
+          type="button"
+          onClick={() => setAdminView('traffic')}
+          className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+            adminView === 'traffic'
+              ? 'bg-emerald-500 text-stone-950 shadow-md shadow-emerald-500/20'
+              : 'text-stone-300 hover:text-white hover:bg-stone-900'
+          }`}
+        >
+          <BarChart3 className="w-4 h-4 shrink-0" />
+          <span className="truncate">Site Visitors (Hourly / Daily / Weekly / Monthly)</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setAdminView('providers')}
+          className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+            adminView === 'providers'
+              ? 'bg-amber-400 text-stone-950 shadow-md shadow-amber-500/20'
+              : 'text-stone-300 hover:text-white hover:bg-stone-900'
+          }`}
+        >
+          <Store className="w-4 h-4 shrink-0" />
+          <span className="truncate">Salons &amp; Providers ({providers.length})</span>
+        </button>
+      </div>
+
+      {adminView === 'traffic' ? (
+        <SiteTrafficAnalytics />
+      ) : (
+        /* Existing Providers Management List (Mobile Cards + Desktop Table) */
+        <div className="bg-stone-900/85 backdrop-blur-xl rounded-2xl border border-stone-800 overflow-hidden shadow-xl">
+          <div className="p-4 sm:p-5 border-b border-stone-800 bg-stone-950/80 flex items-center justify-between">
           <div>
             <h3 className="text-base font-serif font-bold text-white">
               Active Service Providers ({providers.length})
@@ -210,21 +244,88 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
           </div>
         </div>
 
-        <div className="overflow-x-auto">
+        {/* Mobile Stacked Cards (< md) */}
+        <div className="md:hidden divide-y divide-stone-800">
+          {providers.map((p) => (
+            <div key={p._id} className="p-4 space-y-3">
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-11 h-11 rounded-xl overflow-hidden bg-stone-950 shrink-0 border border-stone-800">
+                    <img
+                      src={p.image}
+                      alt={p.businessName}
+                      className="w-full h-full object-cover"
+                      referrerPolicy="no-referrer"
+                    />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="font-bold text-white text-sm truncate">{p.businessName}</div>
+                    <div className="text-[11px] text-stone-400 truncate">Lead: {p.name}</div>
+                    <div className="text-[11px] text-amber-300 font-medium mt-0.5">
+                      {p.type === 'nail_salon'
+                        ? 'Nail Salon & Art'
+                        : p.type === 'beauty_stylist'
+                        ? 'Hairmaking & Braids'
+                        : 'Mobile Glam Van'}
+                    </div>
+                  </div>
+                </div>
+                <span className="font-mono text-xs text-stone-200 shrink-0">★ {p.rating}</span>
+              </div>
+
+              <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+                <div className="flex items-center gap-1 text-stone-300">
+                  <MapPin className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  <span>{p.location.city}</span>
+                </div>
+                {p.isOnDemandAvailable ? (
+                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-400 bg-emerald-950/80 border border-emerald-500/30 px-2.5 py-0.5 rounded-full">
+                    <Zap className="w-3 h-3 text-emerald-400 fill-emerald-400" />
+                    <span>Online (~{p.estimatedArrivalMinutes}m)</span>
+                  </span>
+                ) : (
+                  <span className="text-[11px] text-stone-400 bg-stone-950 px-2 py-0.5 rounded border border-stone-800">
+                    Studio Only
+                  </span>
+                )}
+              </div>
+
+              <div className="flex items-center gap-2 pt-1">
+                <button
+                  onClick={() => onSelectProvider(p)}
+                  className="flex-1 py-2 text-xs font-semibold text-stone-200 bg-stone-950 hover:bg-stone-800 rounded-xl cursor-pointer border border-stone-800 text-center"
+                >
+                  Preview Salon
+                </button>
+                <button
+                  onClick={() => handleDelete(p._id, p.businessName)}
+                  title="Delete provider"
+                  className="px-3 py-2 text-rose-400 bg-rose-950/40 hover:bg-rose-950/80 border border-rose-500/30 rounded-xl cursor-pointer transition-colors flex items-center gap-1 text-xs"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  <span>Remove</span>
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Desktop Table (md+) */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead className="bg-stone-950/90 text-stone-400 uppercase font-semibold border-b border-stone-800">
               <tr>
                 <th className="p-3.5">Provider / Salon</th>
                 <th className="p-3.5">Category</th>
                 <th className="p-3.5">Location in Kampala</th>
-                <th className="p-3.5">Rating & Reviews</th>
+                <th className="p-3.5">Rating &amp; Reviews</th>
                 <th className="p-3.5">On-Demand Dispatch</th>
                 <th className="p-3.5 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-stone-800 text-stone-200">
               {providers.map((p) => (
-                <tr key={p._id} className="hover:bg-stone-850/60 transition-colors">
+                <tr key={p._id} className="hover:bg-stone-800/50 transition-colors">
                   <td className="p-3.5">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl overflow-hidden bg-stone-950 shrink-0 border border-stone-800">
@@ -295,15 +396,16 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
             </tbody>
           </table>
         </div>
-      </div>
+        </div>
+      )}
 
       {/* Modal: Add New Service Provider */}
       {isAddModalOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-stone-950/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-stone-900 text-stone-100 w-full max-w-2xl rounded-2xl shadow-2xl border border-stone-700 overflow-hidden my-8">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-stone-950/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-stone-900 text-stone-100 w-full max-w-2xl rounded-2xl shadow-2xl border border-stone-700 overflow-hidden flex flex-col max-h-[92vh]">
             
             {/* Modal Header */}
-            <div className="px-6 py-4 border-b border-stone-800 flex items-center justify-between bg-stone-950/80">
+            <div className="px-4 sm:px-6 py-4 border-b border-stone-800 flex items-center justify-between bg-stone-950/80 shrink-0">
               <div>
                 <div className="text-[10px] font-mono uppercase tracking-wider font-semibold text-amber-400">
                   Admin Onboarding Form

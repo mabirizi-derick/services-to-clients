@@ -8,16 +8,16 @@ interface FooterProps {
 
 export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenAuth }) => {
   return (
-    <footer className="bg-stone-950 text-stone-300 pt-16 pb-12 border-t border-stone-800">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+    <footer className="bg-stone-950 text-stone-300 pt-12 sm:pt-16 pb-24 lg:pb-12 border-t border-stone-800">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 space-y-10 sm:space-y-12">
         
         {/* Main 4-Column Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 sm:gap-10">
           
           {/* Column 1: Website Name & Mission (4 cols) */}
           <div className="lg:col-span-4 space-y-4">
-            <div className="flex items-center gap-2">
-              <span className="text-2xl font-serif font-bold text-white tracking-tight">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-xl sm:text-2xl font-serif font-bold text-white tracking-tight">
                 BANDA SERVICES
               </span>
               <span className="text-[10px] font-mono uppercase bg-amber-950/80 text-amber-300 border border-amber-800/50 px-2 py-0.5 rounded font-bold">
@@ -171,17 +171,17 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenAuth }) => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-stone-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-stone-500">
+        <div className="pt-6 sm:pt-8 border-t border-stone-800/80 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 text-xs text-stone-500 text-center sm:text-left">
           <div>
-            © {new Date().getFullYear()} GlamTrack Uganda (glamtrack.ug). All rights reserved. Registered in Kampala, Uganda.
+            © {new Date().getFullYear()} BANDA SERVICES Uganda (bandaservices.ug). All rights reserved. Registered in Kampala, Uganda.
           </div>
 
-          <div className="flex items-center gap-6">
+          <div className="flex flex-wrap items-center justify-center sm:justify-end gap-x-4 gap-y-2">
             <span>Kololo · Bukoto · Nakasero · Bugolobi · Ntinda</span>
-            <span>PCI-DSS & Escrow Compliant</span>
+            <span>Escrow Compliant</span>
             <button
               onClick={onOpenAuth}
-              className="text-stone-400 hover:text-white transition-colors cursor-pointer"
+              className="text-amber-400 hover:text-white transition-colors cursor-pointer font-semibold"
             >
               Sign In
             </button>
