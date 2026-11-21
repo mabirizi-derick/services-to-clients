@@ -2,6 +2,7 @@ import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
 import bcrypt from 'bcryptjs';
+import { MongoClient, Db as MongoDb, Collection, Filter } from 'mongodb';
 
 export interface BaseDoc {
   _id: string;
@@ -114,10 +115,11 @@ export interface VisitDoc extends BaseDoc {
   userAgent?: string;
 }
 
-// In-Memory MongoDB-compatible Collection Engine with optional JSON persistence hook
+// Hybrid MongoDB Collection: Uses real MongoDB Atlas when connected, or local JSON/Memory fallback
 export class MongoCollection<T extends BaseDoc> {
   private documents: Map<string, T> = new Map();
   private onChange?: () => void;
+  private remoteDb: MongoDb | null = null;
 
   constructor(public name: string, onChange?: () => void) {
     this.onChange = onChange;
@@ -125,6 +127,14 @@ export class MongoCollection<T extends BaseDoc> {
 
   setChangeListener(fn: () => void) {
     this.onChange = fn;
+  }
+
+  attachMongoDb(mongoDb: MongoDb | null) {
+    this.remoteDb = mongoDb;
+  }
+
+  private get remoteCol(): Collection<T> | null {
+    return this.remoteDb ? this.remoteDb.collection<T>(this.name) : null;
   }
 
   loadRaw(docs: T[]) {
@@ -145,6 +155,15 @@ export class MongoCollection<T extends BaseDoc> {
   }
 
   async find(query: Partial<T> | ((doc: T) => boolean) = {}): Promise<T[]> {
+    const col = this.remoteCol;
+    if (col) {
+      if (typeof query === 'function') {
+        const all = (await col.find({}).toArray()) as unknown as T[];
+        return all.filter(query);
+      }
+      return (await col.find(query as Filter<T>).toArray()) as unknown as T[];
+    }
+
     const list = Array.from(this.documents.values());
     if (typeof query === 'function') {
       return list.filter(query);
@@ -158,11 +177,24 @@ export class MongoCollection<T extends BaseDoc> {
   }
 
   async findOne(query: Partial<T> | ((doc: T) => boolean)): Promise<T | null> {
+    const col = this.remoteCol;
+    if (col) {
+      if (typeof query === 'function') {
+        const all = (await col.find({}).toArray()) as unknown as T[];
+        return all.find(query) || null;
+      }
+      return (await col.findOne(query as Filter<T>)) as unknown as T | null;
+    }
+
     const results = await this.find(query);
     return results.length > 0 ? results[0] : null;
   }
 
   async findById(id: string): Promise<T | null> {
+    const col = this.remoteCol;
+    if (col) {
+      return (await col.findOne({ _id: id } as Filter<T>)) as unknown as T | null;
+    }
     return this.documents.get(id) || null;
   }
 
@@ -175,6 +207,13 @@ export class MongoCollection<T extends BaseDoc> {
       createdAt: (doc as any).createdAt || now,
       updatedAt: now,
     } as T;
+
+    const col = this.remoteCol;
+    if (col) {
+      await col.insertOne(fullDoc as any);
+      return fullDoc;
+    }
+
     this.documents.set(id, fullDoc);
     this.onChange?.();
     return fullDoc;
@@ -191,14 +230,41 @@ export class MongoCollection<T extends BaseDoc> {
         createdAt: (d as any).createdAt || now,
         updatedAt: now,
       } as T;
-      this.documents.set(id, fullDoc);
       created.push(fullDoc);
+    }
+
+    const col = this.remoteCol;
+    if (col) {
+      if (created.length > 0) {
+        await col.insertMany(created as any[]);
+      }
+      return created;
+    }
+
+    for (const fullDoc of created) {
+      this.documents.set(fullDoc._id, fullDoc);
     }
     this.onChange?.();
     return created;
   }
 
   async updateOne(idOrQuery: string | Partial<T>, update: Partial<T>): Promise<T | null> {
+    const col = this.remoteCol;
+    if (col) {
+      const filter: Filter<T> =
+        typeof idOrQuery === 'string'
+          ? ({ _id: idOrQuery } as Filter<T>)
+          : (idOrQuery as Filter<T>);
+      const { _id: _omitId, ...safeUpdate } = update as any;
+      const now = new Date().toISOString();
+      const result = await col.findOneAndUpdate(
+        filter,
+        { $set: { ...safeUpdate, updatedAt: now } },
+        { returnDocument: 'after' }
+      );
+      return (result as T | null) || null;
+    }
+
     let targetId: string | null = null;
     if (typeof idOrQuery === 'string') {
       targetId = idOrQuery;
@@ -221,17 +287,31 @@ export class MongoCollection<T extends BaseDoc> {
   }
 
   async deleteOne(id: string): Promise<boolean> {
+    const col = this.remoteCol;
+    if (col) {
+      const res = await col.deleteOne({ _id: id } as Filter<T>);
+      return res.deletedCount > 0;
+    }
+
     const deleted = this.documents.delete(id);
     if (deleted) this.onChange?.();
     return deleted;
   }
 
   async count(): Promise<number> {
+    const col = this.remoteCol;
+    if (col) {
+      return col.countDocuments();
+    }
     return this.documents.size;
   }
 }
 
 const STORE_FILE = path.resolve(process.cwd(), 'server', 'data', 'store.json');
+
+declare global {
+  var __bandaMongoClientPromise: Promise<MongoClient> | undefined;
+}
 
 // Database instance containing all MongoDB collections
 export class Database {
@@ -245,10 +325,12 @@ export class Database {
 
   private saveTimer: NodeJS.Timeout | null = null;
   private isHydrating = false;
+  private seedPromise: Promise<void> | null = null;
+  public mode: 'mongodb_atlas' | 'local_json_fallback' = 'local_json_fallback';
 
   constructor() {
     const scheduleSave = () => {
-      if (this.isHydrating) return;
+      if (this.isHydrating || this.mode === 'mongodb_atlas') return;
       if (this.saveTimer) clearTimeout(this.saveTimer);
       this.saveTimer = setTimeout(() => {
         this.persistToDisk();
@@ -262,6 +344,49 @@ export class Database {
     this.loyaltyRewards.setChangeListener(scheduleSave);
     this.notifications.setChangeListener(scheduleSave);
     this.visits.setChangeListener(scheduleSave);
+  }
+
+  private async connectMongoIfConfigured(): Promise<boolean> {
+    const uri = process.env.MONGODB_URI?.trim();
+    if (!uri) return false;
+
+    try {
+      if (!globalThis.__bandaMongoClientPromise) {
+        const client = new MongoClient(uri, {
+          serverSelectionTimeoutMS: 6000,
+          connectTimeoutMS: 6000,
+        });
+        globalThis.__bandaMongoClientPromise = client.connect();
+      }
+      const client = await globalThis.__bandaMongoClientPromise;
+      const dbName = process.env.MONGODB_DB_NAME?.trim() || 'banda_services';
+      const mongoDb = client.db(dbName);
+      await mongoDb.command({ ping: 1 });
+
+      this.users.attachMongoDb(mongoDb);
+      this.providers.attachMongoDb(mongoDb);
+      this.bookings.attachMongoDb(mongoDb);
+      this.reviews.attachMongoDb(mongoDb);
+      this.loyaltyRewards.attachMongoDb(mongoDb);
+      this.notifications.attachMongoDb(mongoDb);
+      this.visits.attachMongoDb(mongoDb);
+
+      // Ensure key indexes cleanly
+      await Promise.all([
+        mongoDb.collection('users').createIndex({ email: 1 }, { unique: true }).catch(() => {}),
+        mongoDb.collection('visits').createIndex({ updatedAt: -1 }).catch(() => {}),
+        mongoDb.collection('visits').createIndex({ visitorId: 1, tab: 1 }).catch(() => {}),
+        mongoDb.collection('bookings').createIndex({ customerId: 1, createdAt: -1 }).catch(() => {}),
+      ]);
+
+      this.mode = 'mongodb_atlas';
+      console.log(`Connected to MongoDB database "${dbName}" successfully.`);
+      return true;
+    } catch (err: any) {
+      globalThis.__bandaMongoClientPromise = undefined;
+      console.warn('MongoDB connection unavailable, using local fallback store:', err?.message || err);
+      return false;
+    }
   }
 
   private hydrateFromDisk() {
@@ -298,12 +423,24 @@ export class Database {
       };
       fs.writeFileSync(STORE_FILE, JSON.stringify(payload), 'utf-8');
     } catch {
-      // Non-fatal if filesystem is read-only
+      // Non-fatal if filesystem is read-only (e.g. Vercel serverless)
     }
   }
 
-  async seed() {
-    this.hydrateFromDisk();
+  async seed(): Promise<void> {
+    if (this.seedPromise) return this.seedPromise;
+    this.seedPromise = this.runSeed().catch((err) => {
+      this.seedPromise = null;
+      throw err;
+    });
+    return this.seedPromise;
+  }
+
+  private async runSeed(): Promise<void> {
+    const connectedMongo = await this.connectMongoIfConfigured();
+    if (!connectedMongo) {
+      this.hydrateFromDisk();
+    }
 
     // Ensure demo accounts always exist right from boot
     if (!(await this.users.findOne({ email: 'admin@glamtrack.ug' }))) {

@@ -230,7 +230,7 @@ router.post('/visit', optionalJWT, async (req: AuthRequest, res) => {
     const resolvedUserRole = req.user?.role || userRole;
 
     // Deduplicate rapid pings within 25 seconds for the same visitor & tab by updating timestamp
-    const recent = await db.visits.find((v) => v.visitorId === visitorId && v.tab === tab);
+    const recent = await db.visits.find({ visitorId, tab });
     const now = Date.now();
     const latestMatch = recent.sort(
       (a, b) => new Date(b.updatedAt || b.createdAt).getTime() - new Date(a.updatedAt || a.createdAt).getTime()
